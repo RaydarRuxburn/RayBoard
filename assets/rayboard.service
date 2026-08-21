@@ -1,0 +1,12 @@
+[Unit]
+Description=Rayboard — native Linux soundboard
+After=pipewire.service virtual-mic.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 %h/.local/bin/rayboard.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,13 @@
+[Unit]
+Description=Rayboard — PipeWire virtual audio devices
+After=pipewire.service
+
+[Service]
+Type=simple
+EnvironmentFile=-%h/.config/rayboard/virtual-mic.env
+ExecStart=%h/.local/bin/virtual-mic-setup.sh
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
