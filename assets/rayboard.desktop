@@ -2,7 +2,7 @@
 Name=Rayboard
 Comment=Native Linux Soundboard
 Exec=/usr/bin/python3 /home/%u/.local/bin/rayboard.py
-Icon=audio-headset
+Icon=%h/.local/share/icons/rayboard.png
 Terminal=false
 Type=Application
 Categories=Audio;Utility;

@@ -106,15 +106,13 @@ systemctl --user enable --now virtual-mic.service
 systemctl --user enable --now rayboard.service
 success "Services started"
 
-# ── custom icon ───────────────────────────────────────────────────────────────
-echo ""
-read -rp "Path to a custom icon image (leave blank for default): " ICON_PATH
-if [ -n "$ICON_PATH" ] && [ -f "$ICON_PATH" ]; then
-    EXT="${ICON_PATH##*.}"
-    cp "$ICON_PATH" "$HOME/.local/share/icons/rayboard.${EXT}"
-    sed -i "s|^Icon=.*|Icon=$HOME/.local/share/icons/rayboard.${EXT}|" "$DESKTOP_DEST"
-    success "Icon set"
+# ── icon ──────────────────────────────────────────────────────────────────────
+mkdir -p "$HOME/.local/share/icons"
+if [ -f "$SCRIPT_DIR/assets/rayboard.png" ]; then
+    cp "$SCRIPT_DIR/assets/rayboard.png" "$HOME/.local/share/icons/rayboard.png"
+    success "Icon installed"
 fi
+sed -i "s|%h|$HOME|g" "$DESKTOP_DEST"
 
 echo ""
 echo -e "${GREEN}${BOLD}Rayboard installed!${NC}"
