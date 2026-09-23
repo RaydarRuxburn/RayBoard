@@ -31,7 +31,9 @@ rm -f "$HOME/.local/share/applications/rayboard.desktop"
 rm -f "$HOME/.local/share/icons/rayboard.png"
 rm -f "$HOME/.config/systemd/user/rayboard.service"
 rm -f "$HOME/.config/systemd/user/virtual-mic.service"
+rm -f "$HOME/.config/pipewire/pipewire.conf.d/99-input-denoising.conf"
 systemctl --user daemon-reload
+systemctl --user restart pipewire pipewire-pulse 2>/dev/null || true
 success "Files removed"
 
 # ── optionally remove config & sounds ─────────────────────────────────────────

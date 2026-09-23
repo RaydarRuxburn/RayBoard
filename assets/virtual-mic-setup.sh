@@ -21,6 +21,13 @@ pactl load-module module-combine-sink \
     sink_properties=device.description="SoundpadOut" \
     slaves="${REAL_SINK},VirtualMic" 2>/dev/null || true
 
+# If denoising was enabled at install time, pull from the filtered source instead
+# of the raw mic. Only your voice is filtered — soundboard audio reaches VirtualMic
+# via SoundpadOut and stays untouched.
+if [ "${RAYBOARD_DENOISE:-0}" = "1" ]; then
+    MIC_SOURCE="NoiseCanceledMic"
+fi
+
 # If a mic source is configured, loopback it into VirtualMic
 if [ -n "$MIC_SOURCE" ]; then
     exec pw-loopback -C "$MIC_SOURCE" -P VirtualMic

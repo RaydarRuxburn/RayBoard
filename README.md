@@ -57,6 +57,37 @@ The installer creates three PipeWire devices:
 
 In Rayboard, set **Out** to `SoundpadOut`. In Discord/TeamSpeak/OBS, set your mic input to `VirtualMicSource`.
 
+### Optional: mic noise suppression
+
+Voice chat apps often chew up soundboard clips — their noise suppression is tuned to keep human speech and gate everything else, so music and effects come through chopped up or not at all. Turning that off fixes clips, but then your mic is unfiltered.
+
+The installer can solve both by filtering your mic *before* it reaches the virtual mic, using RNNoise:
+
+```
+Your mic ──> NoiseCanceledMic (RNNoise) ──┐
+                                          ├──> VirtualMic ──> VirtualMicSource
+Rayboard ──> SoundpadOut ─────────────────┘   (clips unfiltered)
+```
+
+Requires the rnnoise LADSPA plugin:
+
+| Distro | Package |
+|--------|---------|
+| Arch | `noise-suppression-for-voice` |
+| Debian/Ubuntu | `ladspa-rnnoise` |
+| Fedora | `noise-suppression-for-voice` |
+
+Install it first, then run `install.sh` and answer **yes** when asked about noise suppression. It creates `~/.config/pipewire/pipewire.conf.d/99-input-denoising.conf`.
+
+**Then turn OFF these in your voice app** (they'll fight the soundboard):
+
+- Noise Reduction / Noise Suppression
+- Automatic Gain Control
+- Echo Cancellation
+- Any voice-activation mode that uses *speech detection* rather than a plain volume gate — speech detection gates out clips, since effects don't sound like a voice
+
+If your voice gets clipped, lower `VAD Threshold (%)` in the config (default `50.0`) and restart PipeWire.
+
 ## Usage
 
 - **Drag & drop** audio files onto the window to add them

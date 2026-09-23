@@ -1,0 +1,43 @@
+# Rayboard — RNNoise microphone denoising for PipeWire
+# Installed by install.sh to ~/.config/pipewire/pipewire.conf.d/99-input-denoising.conf
+# Requires the rnnoise LADSPA plugin (package: noise-suppression-for-voice)
+#
+# Creates a cleaned-up copy of your mic called "NoiseCanceledMic".
+# virtual-mic-setup.sh then loops THAT into VirtualMic instead of the raw mic,
+# so your voice is filtered but soundboard audio passes through untouched.
+
+context.modules = [
+{   name = libpipewire-module-filter-chain
+    args = {
+        node.description = "NoiseCanceledMic"
+        media.name       = "NoiseCanceledMic"
+        filter.graph = {
+            nodes = [
+                {
+                    type   = ladspa
+                    name   = rnnoise
+                    plugin = @PLUGIN_PATH@
+                    label  = @RNNOISE_LABEL@
+                    control = {
+                        # Raise for more aggressive gating, lower if your voice gets clipped
+                        "VAD Threshold (%)"          = 50.0
+                        "VAD Grace Period (ms)"      = 200
+                        "Retroactive VAD Grace (ms)" = 0
+                    }
+                }
+            ]
+        }
+        capture.props = {
+            node.name     = "capture.rnnoise_source"
+            node.passive  = true
+            target.object = "@MIC_SOURCE@"
+            audio.rate    = 48000
+        }
+        playback.props = {
+            node.name   = "NoiseCanceledMic"
+            media.class = Audio/Source
+            audio.rate  = 48000
+        }
+    }
+}
+]
